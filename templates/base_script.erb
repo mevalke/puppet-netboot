@@ -1,0 +1,39 @@
+#!/bin/bash
+
+INSTALLDIR=/Users/Shared/Downloads
+IMAGR_SERVER=http://<%= @imagr_server_ip %>:8080        # This is the IP of the Netboot host
+SERIAL=$(ioreg -l | grep IOPlatformSerialNumber|awk '{print $4}') # This prints the serial quoted, i.e. "W8943DMT66D"
+
+mkdir $INSTALLDIR
+cd $INSTALLDIR
+touch $INSTALLDIR/log
+
+curl -O $IMAGR_SERVER/imagr/packages/<%= @puppet_agent %> >> $INSTALLDIR/log && /usr/sbin/installer -pkg <%= @puppet_agent %> -target / >> $INSTALLDIR/log
+curl -O $IMAGR_SERVER/imagr/files/macs >> $INSTALLDIR/log
+
+while read -r line; do
+echo $line|grep $SERIAL > /dev/null
+if [ $? == 0 ]; then
+
+var=$(echo $line|awk '{ print $3 }')
+
+scutil --set HostName $(echo $line|awk '{ print $2 }') >> $INSTALLDIR/log
+scutil --set LocalHostName $(echo $line|awk '{ print $2 }'|awk -F. '{ print $1 }') >> $INSTALLDIR/log
+scutil --set ComputerName $(echo $line|awk '{ print $2 }'|awk -F. '{ print $1 }') >> $INSTALLDIR/log
+
+cat << EOF > /etc/puppetlabs/puppet/csr_attributes.yaml
+custom_attributes:
+  1.2.840.113549.1.9.7: $var
+EOF
+
+fi
+done < macs
+
+cat << EOF >> /etc/puppetlabs/puppet/puppet.conf
+[agent]
+server=<%= @puppetmaster %>
+EOF
+
+for i in $(ls $INSTALLDIR);do if [ $i != log ];then rm -rf $INSTALLDIR/${i}; fi; done
+
+exit 0

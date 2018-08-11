@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>password</key>
+	<string><%= @password %></string>
+	<key>workflows</key>
+	<array>
+		<dict>
+			<key>bless_target</key>
+			<true/>
+			<key>components</key>
+			<array>
+				<dict>
+				    <key>type</key>
+				    <string>eraseVolume</string>
+				    <key>name</key>
+				    <string>OS DISK</string>
+				    <key>format</key>
+				    <string>Journaled HFS+</string>
+				</dict>
+				<dict>
+					<key>type</key>
+					<string>image</string>
+					<key>url</key>
+					<string>http://<%= @imagr_server_dns %>:8080/imagr/images/<%= @autodmg %></string>
+				</dict>
+				<dict>
+					<key>type</key>
+					<string>script</string>
+					<key>url</key>
+					<string>http://<%= @imagr_server_dns %>:8080/imagr/scripts/base_script</string>
+				</dict>
+			</array>
+			<key>description</key>
+			<string><%= @description %></string>
+			<key>name</key>
+			<string>Rename and image the Mac</string>
+			<key>restart_action</key>
+			<string>restart</string>
+		</dict>
+	</array>
+</dict>
+</plist>
