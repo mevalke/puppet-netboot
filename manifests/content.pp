@@ -5,7 +5,7 @@ class netboot::content {
   $password          = $netboot::password
   $autodmg           = $netboot::autodmg
   $nbi               = $netboot::nbi
-  $nbi_url		       = $netboot::nbi_url
+  $nbi_url           = $netboot::nbi_url
   $nbi_checksum      = $netboot::nbi_checksum
   $nbi_checksum_type = $netboot::nbi_checksum_type
   $puppet_agent      = $netboot::puppet_agent
