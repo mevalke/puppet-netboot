@@ -2,7 +2,7 @@ class netboot::docker {
   $bsdpy_iface     = $netboot::bsdpy_iface
   $imagr_server_ip = $netboot::imagr_server_ip
 
-# include docker
+  include docker
 
   docker::image { 'httpd': }
   docker::image { 'macadmins/netboot-httpd': }
